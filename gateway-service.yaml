@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-app
+  labels:
+    app: gateway-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-app
+  template:
+    metadata:
+      labels:
+        app: gateway-app
+    spec:
+      containers:
+        - name: gateway-app
+          image: ayga/gateway-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: "GATEWAY"
+            - name: SERVER_PORT
+              value: "8080"
+            - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+              value: "http://eureka:8761/eureka/"
+            - name: SPRING_SECURITY_ENABLED
+              value: "false"
+            - name: CORS_ALLOWED_ORIGINS
+              value: "*"
+            - name: CORS_ALLOWED_METHODS
+              value: "*"
+            - name: CORS_ALLOWED_HEADERS
+              value: "*"
+      imagePullSecrets:
+        - name: my-dockerhub-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gateway-app
+  name: gateway-app-nodeport
+spec:
+  type: NodePort
+  ports:
+    - name: gateway-app-service-port
+      port: 8080
+      targetPort: 8080
+      nodePort: 30002 # You can specify a different nodePort if needed
+      protocol: TCP
+  selector:
+    app: gateway-app

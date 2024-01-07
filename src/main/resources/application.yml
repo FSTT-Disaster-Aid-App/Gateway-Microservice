@@ -1,0 +1,40 @@
+spring:
+  security:
+    enabled: false
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: victim-service
+          uri: lb://Victim-Service
+          predicates:
+            - Path=/victim/**
+          filters:
+            - AuthenticationFilter
+
+        - id: volunteer-service
+          uri: lb://Volunteer-Service
+          predicates:
+            - Path=/volunteer/**
+          filters:
+            - AuthenticationFilter
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+  application:
+    name: GATEWAY
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -10,5 +10,3 @@ The Gateway Microservice is a Spring Boot application designed to serve as an AP
 
 - Request routing to microservices
 - Built on top of Spring Cloud Gateway
-# Gateway-Microservice
-# Gateway-Microservice
