@@ -31,6 +31,12 @@ spring:
           predicates:
             - Path=/auth/**
 
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/user/**
+          fitters:
+            - AuthenticationFilter
   application:
     name: GATEWAY
 
